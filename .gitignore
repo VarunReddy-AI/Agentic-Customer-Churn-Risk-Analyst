@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+
+# Virtual Environment
+venv/
+.venv/
+env/
+
+# VS Code
+.vscode/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# MLflow
+mlruns/
+
+# Models
+models/
+
+# Logs
+logs/
+*.log
+
+# Dataset (optional if large)
+data/raw/
+
+# Environment
+.env
+
+# macOS
+.DS_Store
