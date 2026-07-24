@@ -5,20 +5,34 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
 from src.utils.model_io import save_object
-
-
-CATEGORICAL_COLS = [
-    "contract_type",
-    "marketing_segment",
-    "signup_channel"
-]
+from src.config.config import (
+    MODEL_PATH,
+    SCALER_PATH,
+    ENCODER_PATH,
+    MODEL_DIR,
+    REPORT_DIR,
+    PROCESSED_DATA_DIR,
+    X_TRAIN_PATH,
+    X_TEST_PATH,
+    Y_TRAIN_PATH,
+    Y_TEST_PATH,
+    METRICS_PATH,
+)
 
 NUMERICAL_COLS = [
     "tenure_months",
     "monthly_charges",
     "usage_minutes",
-    "payment_delay_days"
+    "support_calls",
+    "payment_delay_days",
+    "num_services",
+    "satisfaction_score"
 ]
+
+CATEGORICAL_COLS = [
+    "contract_type",
+    "marketing_segment",
+    "signup_channel"]
 
 
 def split_data(df):
@@ -125,36 +139,36 @@ def save_preprocessing_objects(
     encoder
 ):
 
-    os.makedirs("data/processed", exist_ok=True)
+    os.makedirs(PROCESSED_DATA_DIR, exist_ok=True)
 
     X_train.to_csv(
-        "data/processed/X_train.csv",
+        X_TRAIN_PATH,
         index=False
     )
 
     X_test.to_csv(
-        "data/processed/X_test.csv",
+        X_TEST_PATH,
         index=False
     )
 
     y_train.to_csv(
-        "data/processed/y_train.csv",
+        Y_TRAIN_PATH,
         index=False
     )
 
     y_test.to_csv(
-        "data/processed/y_test.csv",
-        index=False
+    Y_TEST_PATH,
+    index=False
     )
 
     save_object(
-        scaler,
-        "models/scaler.pkl"
+    scaler,
+    SCALER_PATH
     )
 
     save_object(
         encoder,
-        "models/onehot_encoder.pkl"
+        ENCODER_PATH
     )
 
 

@@ -21,14 +21,30 @@ from src.models.predict import (
 )
 from src.utils.model_io import load_object
 
+import sys
 
+from src.exception.exception import CustomException
+from src.logger.logger import logger
+from src.config.config import (
+    MODEL_PATH,
+    SCALER_PATH,
+    ENCODER_PATH,
+    MODEL_DIR,
+    REPORT_DIR,
+    PROCESSED_DATA_DIR,
+    X_TRAIN_PATH,
+    X_TEST_PATH,
+    Y_TRAIN_PATH,
+    Y_TEST_PATH,
+    METRICS_PATH,
+)
 def prediction_pipeline(csv_path):
     """
     Predict churn for new customer data.
     If the dataset contains the target column (churn),
     evaluate the model and save metrics.
     """
-
+    logger.info("Time to predict todays data🫣🫣🫣")
     # -------------------------------
     # Load and clean data
     # -------------------------------
@@ -48,9 +64,9 @@ def prediction_pipeline(csv_path):
     # -------------------------------
     # Load preprocessing objects
     # -------------------------------
-    encoder = load_object("models/onehot_encoder.pkl")
+    encoder = load_object(ENCODER_PATH)
 
-    scaler = load_object("models/scaler.pkl")
+    scaler = load_object(SCALER_PATH)
 
     # -------------------------------
     # Transform features
@@ -65,7 +81,7 @@ def prediction_pipeline(csv_path):
     # Load model
     # -------------------------------
     model = load_model()
-
+    logger.info("loaded data, models and ready set gooo")
     # -------------------------------
     # Predictions
     # -------------------------------
@@ -76,7 +92,7 @@ def prediction_pipeline(csv_path):
     # -------------------------------
     # Save predictions
     # -------------------------------
-    os.makedirs("reports", exist_ok=True)
+    os.makedirs(REPORT_DIR, exist_ok=True)
 
     prediction_results = df.copy()
 
@@ -98,7 +114,9 @@ def prediction_pipeline(csv_path):
         )
 
     prediction_results.to_csv(
-        f"reports/{os.path.basename(csv_path).replace('.csv', '_predictions.csv')}",
+        os.path.join(
+        REPORT_DIR,
+        os.path.basename(csv_path).replace(".csv", "_predictions.csv")),
         index=False
     )
 
@@ -140,7 +158,7 @@ def prediction_pipeline(csv_path):
             "roc_auc": [roc_auc]
         })
 
-        metrics_path = "reports/metrics.csv"
+        metrics_path = METRICS_PATH
 
         if os.path.exists(metrics_path):
 
@@ -157,7 +175,7 @@ def prediction_pipeline(csv_path):
         )
 
         print("Metrics saved successfully.")
-
+    logger.info("that was he is the goat😎😎")
     return prediction_results
 
 
