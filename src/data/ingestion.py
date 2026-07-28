@@ -12,6 +12,7 @@ def load_data(file_path):
         logger.info(f"Loading data from {file_path}")
 
         df = pd.read_csv(file_path)
+        # comment
 
         logger.info("Data loaded successfully.")
 
