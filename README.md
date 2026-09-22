@@ -1,60 +1,55 @@
-Agentic Customer Churn Risk Analyst
+Customer Churn Monitoring & Agentic Analysis
 
-An ML-powered customer churn prediction system extended with a Gemini LLM analysis layer and Flask API.
+An end-to-end customer churn prediction system that combines a machine learning model with a Gemini-powered analysis agent.
 
-Overview
+What it does
 
-This project predicts whether a customer is likely to churn and estimates churn probability using a trained machine-learning model. The prediction and customer information are then passed to Gemini, which produces a short explanation of the main risk factors and practical actions that may help reduce churn risk.
+Predicts customer churn risk using a trained ML model.
+
+Returns churn probability.
+
+Uses Gemini to explain the main reasons and suggest practical actions.
+
+Provides a simple web UI through Flask.
 
 Architecture
 
-Customer Data
-      |
-      v
-   Flask App
-      |
-      v
-ML Preprocessing
-      |
-      v
-Trained Churn Model
-      |
-      +----> Churn Prediction
-      |      Churn Probability
-      |
-      v
-    Gemini
-      |
-      v
-Risk Explanation
-      |
-      +----> Why?
-      |
-      +----> How to Improve
-
-Features
-
-Machine Learning
-
-Customer churn classification
-
-Churn probability prediction
-
-One-hot encoding for categorical features
-
-StandardScaler for numerical features
-
-Saved model, encoder, and scaler artifacts
-
-Class balancing using sample weights during training
-
-Gemini Analysis
-
-Gemini receives the customer information and ML prediction and generates:
-
-A short explanation of the main risk factors
-
-A few practical actions to improve retention
+┌──────────────────┐
+│   Customer Data  │
+│   (Web UI / JSON)│
+└────────┬─────────┘
+         │
+         ▼
+┌──────────────────┐
+│   Flask API      │
+│  /predict /agent │
+└────────┬─────────┘
+         │
+         ▼
+┌──────────────────┐
+│ Preprocessing    │
+│ Encoder + Scaler │
+└────────┬─────────┘
+         │
+         ▼
+┌──────────────────┐
+│   ML Model       │
+│  Churn Prediction│
+└────────┬─────────┘
+         │
+         ├──────────────► Churn Risk + Probability
+         │
+         ▼
+┌──────────────────┐
+│ Gemini Analysis  │
+│   Agent          │
+└────────┬─────────┘
+         │
+         ▼
+┌──────────────────┐
+│ Explanation +    │
+│ Actions to Improve│
+└──────────────────┘
 
 Tech Stack
 
@@ -62,107 +57,38 @@ Python
 
 Flask
 
-scikit-learn
+Scikit-learn
 
 Pandas
 
-NumPy
-
-CatBoost
-
 Gemini API
 
-HTML/CSS/JavaScript
+HTML / CSS / JavaScript
 
 Joblib
 
-Git/GitHub
+Run locally
 
-Project Structure
+Install dependencies:
 
-customer-churn-monitoring-mlops/
-|
-├── src/
-│   ├── config/
-│   ├── data/
-│   ├── exception/
-│   ├── features/
-│   ├── logger/
-│   ├── models/
-│   ├── pipeline/
-│   └── utils/
-|
-├── templates/
-│   └── index.html
-|
-├── reports/
-├── tests/
-|
-├── app.py
-├── Dockerfile
-├── docker-compose.yml
-├── requirements.txt
-├── README.md
-└── .gitignore
+pip install flask pandas scikit-learn joblib python-dotenv openai
 
-Setup
+Create .env:
 
-1. Clone the repository
+GOOGLE_API_KEY=your_api_key
 
-git clone <your-repository-url>
-cd customer-churn-monitoring-mlops
-
-2. Create a virtual environment
-
-Windows:
-
-python -m venv venv
-.\venv\Scripts\Activate.ps1
-
-3. Install dependencies
-
-python -m pip install -r requirements.txt
-
-4. Configure Gemini
-
-Create a .env file in the project root:
-
-GOOGLE_API_KEY=your_gemini_api_key
-
-Never commit .env or your API key to GitHub.
-
-5. Run the application
+Start the application:
 
 python app.py
 
-Open:
+Then open the local URL shown by Flask in your terminal, usually:
 
-http://127.0.0.1:5000/
-
-API Endpoints
-
-Home
-
-GET /
-
-Loads the customer churn analysis interface.
-
-ML Prediction
-
-POST /predict
-
-Returns the ML prediction and churn probability.
-
-Agent Analysis
-
-POST /agent
-
-Runs the customer data through the ML prediction pipeline and sends the prediction and customer information to Gemini for concise risk analysis.
+http://127.0.0.1:5000
 
 Example Input
 
 {
-  "customer_id": "1042",
+  "customer_id": 1042,
   "tenure_months": 36,
   "monthly_charges": 45,
   "usage_minutes": 500,
@@ -176,53 +102,32 @@ Example Input
   "signup_channel": "organic"
 }
 
-Example Result
+Example Output
 
-Prediction
+ML Prediction
 
 Risk: Low
 Churn Probability: 41.25%
 
+Gemini Agent Analysis
+
 Why?
-- Moderate churn probability despite low risk classification
-- One-year contract
-- Moderate monthly charges
+
+One-year contract
+
+Moderate monthly charges
+
+Moderate churn probability
 
 How to Improve
-- Encourage longer-term renewal
-- Maintain payment reliability
-- Continue customer engagement
 
-Important Notes
+Encourage longer-term renewal
 
-Use a compatible scikit-learn version when loading saved model/preprocessing artifacts.
+Maintain autopay and payment reliability
 
-Categorical values supplied during prediction must match categories expected by the saved encoder.
+Continue customer engagement
 
-customer_id is treated as an identifier and is not used as an ML feature.
 
-Gemini explains the ML result; it does not replace the trained churn model.
+Note
 
-The current implementation uses an LLM analysis layer. It can later be extended with genuine function/tool calling.
-
-Future Improvements
-
-Add Gemini function/tool calling
-
-Add customer statistics tools
-
-Add model explainability
-
-Add churn monitoring and drift detection
-
-Add automated retention recommendations
-
-Add authentication and production WSGI deployment
-
-Add automated CI/CD testing
-
-Containerize and deploy the application
-
-Disclaimer
-
-This project is for educational and demonstration purposes. Model predictions should be validated before being used for real customer decisions.
+The ML model handles the prediction. Gemini is used to generate a short, human-readable analysis based on the customer data and ML result.
