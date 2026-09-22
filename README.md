@@ -14,42 +14,29 @@ Provides a simple web UI through Flask.
 
 Architecture
 
-┌──────────────────┐
-│   Customer Data  │
-│   (Web UI / JSON)│
-└────────┬─────────┘
-         │
-         ▼
-┌──────────────────┐
-│   Flask API      │
-│  /predict /agent │
-└────────┬─────────┘
-         │
-         ▼
-┌──────────────────┐
-│ Preprocessing    │
-│ Encoder + Scaler │
-└────────┬─────────┘
-         │
-         ▼
-┌──────────────────┐
-│   ML Model       │
-│  Churn Prediction│
-└────────┬─────────┘
-         │
-         ├──────────────► Churn Risk + Probability
-         │
-         ▼
-┌──────────────────┐
-│ Gemini Analysis  │
-│   Agent          │
-└────────┬─────────┘
-         │
-         ▼
-┌──────────────────┐
-│ Explanation +    │
-│ Actions to Improve│
-└──────────────────┘
+Customer Data
+      |
+      v
+   Flask App
+      |
+      v
+ML Preprocessing
+      |
+      v
+Trained Churn Model
+      |
+      +----> Churn Prediction
+      |      Churn Probability
+      |
+      v
+    Gemini
+      |
+      v
+Risk Explanation
+      |
+      +----> Why?
+      |
+      +----> How to Improve
 
 Tech Stack
 
