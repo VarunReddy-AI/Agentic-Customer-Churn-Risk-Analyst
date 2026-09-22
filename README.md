@@ -1,4 +1,4 @@
-Customer Churn Monitoring & Agentic Analysis
+# Customer Churn Monitoring & Agentic Analysis
 
 An end-to-end customer churn prediction system that combines a machine learning model with a Gemini-powered analysis agent.
 
