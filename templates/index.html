@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Agentic Customer Churn Risk Analyst</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0 15px;
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 12px 25px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>Agentic Customer Churn Risk Analyst</h1>
+
+<label>Customer ID</label>
+<input id="customer_id" value="1042">
+
+<label>Tenure Months</label>
+<input id="tenure_months" type="number" value="8">
+
+<label>Monthly Charges</label>
+<input id="monthly_charges" type="number" value="79">
+
+<label>Usage Minutes</label>
+<input id="usage_minutes" type="number" value="120">
+
+<label>Support Calls</label>
+<input id="support_calls" type="number" value="5">
+
+<label>Payment Delay Days</label>
+<input id="payment_delay_days" type="number" value="12">
+
+<label>Contract Type</label>
+<select id="contract_type">
+    <option value="Month-to-month">Month-to-month</option>
+    <option value="One year">One year</option>
+    <option value="Two year">Two year</option>
+</select>
+
+<label>Autopay</label>
+<select id="autopay">
+    <option value="0">No</option>
+    <option value="1">Yes</option>
+</select>
+
+<label>Number of Services</label>
+<input id="num_services" type="number" value="2">
+
+<label>Satisfaction Score</label>
+<input id="satisfaction_score" type="number" value="4">
+
+<label>Signup Channel</label>
+<input id="signup_channel" value="Online">
+
+<label>Marketing Segment</label>
+<input id="marketing_segment" value="Standard">
+
+<br>
+
+<button type="button" onclick="analyzeCustomer()">
+    Analyze Customer
+</button>
+
+
+<div class="result">
+
+    <h2>ML Prediction</h2>
+
+    <p>
+        <strong>Risk:</strong>
+        <span id="risk">-</span>
+    </p>
+
+    <p>
+        <strong>Churn Probability:</strong>
+        <span id="probability">-</span>
+    </p>
+
+    <h2>Gemini Agent Analysis</h2>
+
+    <div id="explanation">
+        Waiting for analysis...
+    </div>
+
+</div>
+
+
+<script>
+
+async function analyzeCustomer() {
+
+    console.log("BUTTON CLICKED");
+
+    const customer = {
+
+        customer_id:
+            document.getElementById("customer_id").value,
+
+        tenure_months:
+            Number(document.getElementById("tenure_months").value),
+
+        monthly_charges:
+            Number(document.getElementById("monthly_charges").value),
+
+        usage_minutes:
+            Number(document.getElementById("usage_minutes").value),
+
+        support_calls:
+            Number(document.getElementById("support_calls").value),
+
+        payment_delay_days:
+            Number(document.getElementById("payment_delay_days").value),
+
+        contract_type:
+            document.getElementById("contract_type").value,
+
+        autopay:
+            Number(document.getElementById("autopay").value),
+
+        num_services:
+            Number(document.getElementById("num_services").value),
+
+        satisfaction_score:
+            Number(document.getElementById("satisfaction_score").value),
+
+        signup_channel:
+            document.getElementById("signup_channel").value,
+
+        marketing_segment:
+            document.getElementById("marketing_segment").value
+    };
+
+
+    console.log("CUSTOMER DATA:", customer);
+
+
+    document.getElementById("explanation").innerHTML =
+        "<p>Analyzing...</p>";
+
+
+    try {
+
+        console.log("SENDING REQUEST TO /agent");
+
+
+        const response = await fetch("/agent", {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify(customer)
+
+        });
+
+
+        console.log("RESPONSE RECEIVED:", response.status);
+
+
+        const result = await response.json();
+
+
+        console.log("RESULT:", result);
+
+
+        if (!response.ok) {
+
+            document.getElementById("explanation").innerHTML =
+                "<p><strong>Error:</strong> " +
+                (result.error || "Something went wrong") +
+                "</p>";
+
+            return;
+        }
+
+
+        document.getElementById("risk").innerText =
+            result.ml_result.risk_level;
+
+
+        document.getElementById("probability").innerText =
+            (result.ml_result.churn_probability * 100).toFixed(2)
+            + "%";
+
+
+        document.getElementById("explanation").innerHTML =
+            result.llm_explanation;
+
+
+    } catch (error) {
+
+        console.error("ERROR:", error);
+
+        document.getElementById("explanation").innerHTML =
+            "<p><strong>Error:</strong> " +
+            error.message +
+            "</p>";
+    }
+
+}
+
+</script>
+
+</body>
+</html>
